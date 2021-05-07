@@ -12,23 +12,23 @@
 #include <stdlib.h>
 
 
-
+//트리의 노드 구조를 구조체로 정의
 typedef struct node {
 	int key;
-	struct node *left;
-	struct node *right;
+	struct node *left;  //왼쪽 노드
+	struct node *right;  //오른쪽 노드
 } Node;
 
-/* for stack */
-#define MAX_STACK_SIZE		20
+//스택을 위한 요소
+#define MAX_STACK_SIZE		20  //스택의 최대 사이즈
 Node* stack[MAX_STACK_SIZE];
 int top = -1;
 
 Node* pop();
 void push(Node* aNode);
 
-/* for queue */
-#define MAX_QUEUE_SIZE		20
+//큐를 위한 요소
+#define MAX_QUEUE_SIZE		20  //큐의 최대 사이즈
 Node* queue[MAX_QUEUE_SIZE];
 int front = -1;
 int rear = -1;
@@ -39,15 +39,15 @@ void enQueue(Node* aNode);
 
 int initializeBST(Node** h);
 
-/* functions that you have to implement */
-void recursiveInorder(Node* ptr);	  /* recursive inorder traversal */
-void iterativeInorder(Node* ptr);     /* iterative inorder traversal */
-void levelOrder(Node* ptr);	          /* level order traversal */
-int insert(Node* head, int key);      /* insert a node to the tree */
-int deleteNode(Node* head, int key);  /* delete the node for the key */
-int freeBST(Node* head); /* free all memories allocated to the tree */
+//함수 리스트
+void recursiveInorder(Node* ptr);	  //중위 순회 재귀 연산
+void iterativeInorder(Node* ptr);     //중위 순회 반복 연산
+void levelOrder(Node* ptr);	          //레벨 순서 순회 연산
+int insert(Node* head, int key);      //트리의 key값 삭제 연산
+int deleteNode(Node* head, int key);  //트리의 key값 삭제 연산
+int freeBST(Node* head); //트리의 메모리 해제 연산
 
-/* you may add your own defined functions if necessary */
+
 
 
 void printStack() {
@@ -59,6 +59,7 @@ void printStack() {
 int main()
 {
 	char command;
+    printf("[----- [김현민]  [2018038088] -----]");
 	int key;
 	Node* head = NULL;
 
@@ -121,13 +122,13 @@ int main()
 
 int initializeBST(Node** h) {
 
-	/* if the tree is not empty, then remove all allocated nodes from the tree*/
+	//트리가 null이 아닌 경우 트리에 삽입된 모든 노드를 삭제
 	if(*h != NULL)
 		freeBST(*h);
 
-	/* create a head node */
+	//head를 생성
 	*h = (Node*)malloc(sizeof(Node));
-	(*h)->left = NULL;	/* root */
+	(*h)->left = NULL;	//루트
 	(*h)->right = *h;
 	(*h)->key = -9999;
 
@@ -208,30 +209,26 @@ int insert(Node* head, int key)
 		return 1;
 	}
 
-	/* head->left is the root */
+	//head->left가 루트를 나타냄
 	Node* ptr = head->left;
 
 	Node* parentNode = NULL;
 	while(ptr != NULL) {
 
-		/* if there is a node for the key, then just return */
+		//key값에 대한 노드가 있을 경우
 		if(ptr->key == key) return 1;
 
-		/* we have to move onto children nodes,
-		 * keep tracking the parent using parentNode */
+		//부모 노드를 사용하여 자식 노드의 위치 탐색
 		parentNode = ptr;
 
-		/* key comparison, if current node's key is greater than input key
-		 * then the new node has to be inserted into the right subtree;
-		 * otherwise the left subtree.
-		 */
+		//부모 노드의 key값이 추가한 key값보다 큰 경우 새로운 노드를 오른쪽 자식 노드에 삽입, 작을 경우 왼쪽 자식 노드에 삽입
 		if(ptr->key < key)
 			ptr = ptr->right;
 		else
 			ptr = ptr->left;
 	}
 
-	/* linking the new node to the parent */
+	//새로운 노드를 부모 노드에 연결
 	if(parentNode->key > key)
 		parentNode->left = newNode;
 	else
@@ -296,7 +293,7 @@ int deleteNode(Node* head, int key) {
 				parent->right = child;
 			}
 		}
-		else {  //부모 노드가 null이여서 child 노드가 부모 노드가 되는 경우
+		else {  //부모 노드가 null이여서 자식 노드가 부모 노드가 되는 경우
 			head = child;  
 		}
 	}
@@ -311,7 +308,7 @@ int deleteNode(Node* head, int key) {
 			succ = succ->left;
 		}
 
-		//자식 노드에 대한 후계 노드의 부모 노드와 자식노드를 연결
+		//자식 노드에 대한 후계 노드의 부모 노드와 자식 노드를 연결
 		if (succ_parent->left == succ) {   
 			succ_parent->left = succ->right;
 		}
