@@ -178,7 +178,7 @@ void levelOrder(Node* ptr) {
     Node* temp;
     enQueue(ptr);  //ptr을 큐에 삽입
 
-    while (ptr) {  //ptr이 null이 아닐 경우 
+    while (ptr) {  //ptr이 null이 아닌 경우 
         temp = deQueue();  //큐에서 부모 노드의 key값을 삭제하여 temp에 저장
         
         if (temp == NULL) {  //temp가 null인 경우
@@ -240,8 +240,88 @@ int insert(Node* head, int key)
 }
 
 
-int deleteNode(Node* head, int key)
-{
+int deleteNode(Node* head, int key) {
+    Node* parent, * p, * succ_parent, * succ; 
+	Node* child;
+
+	parent = NULL;  
+	p = head->left;
+
+	while ((p != NULL) && (p->key != key)) {  //삭제할 p 노드의 위치 탐색
+		parent = p;
+
+		if (key < p->key) {
+			p = p->left;
+		}
+		else {
+			p = p->right;
+		}
+	}
+
+	if (p == NULL) {  //삭제할 p 노드가 null인 경우
+		printf("\n 삭제 할 키가 이진트리에 없습니다!");
+
+		return 0;
+	}
+
+	//삭제할 p 노드가 단말 노드인 경우
+	if ((p->left == NULL) && (p->right == NULL)) {
+		if (parent != NULL) {  //부모 노드가 null이 아닌 경우
+			if (parent->left == p) {
+				parent->left = NULL;
+			}
+			else {
+				parent->right = NULL;
+			}
+		}
+		else {  //부모 노드가 null인 경우
+			head = NULL;  
+		}  
+	}
+
+	//삭제할 p 노드가 자식 노드를 한 개 가진 경우
+	else if ((p->left == NULL) || (p->right == NULL)) {
+		if (p->left != NULL) {
+			child = p->left;
+		}
+		else {
+			child = p->right;
+		}
+
+		if (parent != NULL) {  //부모 노드가 null이 아닌 경우
+			if (parent->left == p) {
+				parent->left = child;
+			}
+			else {
+				parent->right = child;
+			}
+		}
+		else {  //부모 노드가 null이여서 child 노드가 부모 노드가 되는 경우
+			head = child;  
+		}
+	}
+
+	//삭제할 p 노드가 자식 노드를 두 개 가진 경우
+	else {
+	    succ_parent = p;
+		succ = p->right;
+
+		while (succ->left != NULL) {  //오른쪽 자식 노드에서 가장 작은 값을 찾기
+			succ_parent = succ;
+			succ = succ->left;
+		}
+
+		//자식 노드에 대한 후계 노드의 부모 노드와 자식노드를 연결
+		if (succ_parent->left == succ) {   
+			succ_parent->left = succ->right;
+		}
+		else {  //후계노드의 부모 노드가 null이여서 가장 작은 값을 가진 오른쪽 자식 노드가 부모 노드가 되는 경우
+			succ_parent->right = succ->right;  
+		}
+		p->key = succ->key;
+		p = succ;
+	}
+	free(p);
 }
 
 
