@@ -155,7 +155,7 @@ void recursiveInorder(Node* ptr)
 void iterativeInorder(Node* node) {
     int top = -1;  //스택 초기화
 	Node* stack[MAX_STACK_SIZE];  
-    
+
 	for ( ; ; ) {
 	    for ( ; node; node = node->left) {
 			push(node);  //스택에 삽입
@@ -174,8 +174,25 @@ void iterativeInorder(Node* node) {
 /**
  * textbook: p 225
  */
-void levelOrder(Node* ptr)
-{
+void levelOrder(Node* ptr) {
+    Node* temp;
+    enQueue(ptr);  //ptr을 큐에 삽입
+
+    while (ptr) {  //ptr이 null이 아닐 경우 
+        temp = deQueue();  //큐에서 부모 노드의 key값을 삭제하여 temp에 저장
+        
+        if (temp == NULL) {  //temp가 null인 경우
+            break;
+        }
+        printf("[%d]  ", temp->key);  
+        
+        if (temp->left) {  //출력한 부모 노드의 왼쪽 자식 노드 key값을 삽입
+            enQueue(temp->left);
+        }
+        if (temp->right) {  //출력한 부모 노드의 오른쪽 자식 노드 key값을 삽입
+            enQueue(temp->right);
+        }
+    }
 }
 
 
@@ -261,7 +278,7 @@ Node* pop() {
     if (top == -1) {  //스택의 top의 위치가 -1인 경우 aNode로 다시 리턴
         return aNode;
     }
-    aNode = stack[top];  //스택의 top값을 aNode의 위치에 저장
+    aNode = stack[top];  //스택의 top의 key값을 aNode의 위치에 저장
     top--;  //스택 top의 위치를 가르키는 숫자 값을 감소
 
     return aNode;
@@ -272,17 +289,38 @@ void push(Node* aNode) {
         return;
     }
 	++top;  //스택 top의 위치를 가르키는 숫자 값을 증가
-    stack[top] = aNode;  //aNode값을 스택의 top의 위치에 저장
+    stack[top] = aNode;  //aNode의 key값을 스택의 top의 위치에 저장
 }
 
 
 
-Node* deQueue()
-{
+Node* deQueue() {
+    Node* aNode = NULL;
+
+    if (front == rear) {  //front의 위치와 rear의 위치가 같을 경우
+        if (front != -1) {  //큐의 front의 위치가 -1이 아닌 경우
+            aNode = queue[front];  //큐의 front의 key값을 aNode의 위치에 저장
+            front = rear = -1;  //큐 초기화
+        }
+
+        return aNode;
+    }
+    aNode = queue[front];  //큐의 front의 key값을 aNode의 위치에 저장
+    front++;  //큐 front의 위치를 가르키는 숫자 값을 증가
+
+    return aNode;
 }
 
-void enQueue(Node* aNode)
-{
+void enQueue(Node* aNode) {
+    if (rear == MAX_QUEUE_SIZE - 1) {  //큐의 rear의 위치를 가르키는 숫자값이 큐의 최대 사이즈-1을 한 숫자 값을 나타낸 경우 다시 리턴
+        return;
+    }
+
+    if (front == -1) {  //큐의 front의 위치가 -1인 경우
+        front++;  //큐 front의 위치를 가르키는 숫자 값을 증가
+    }
+    rear++;  //큐 rear의 위치를 가르키는 숫자 값을 증가
+    queue[rear] = aNode;  //aNode의 key값을 큐의 rear의 위치에 저장
 }
 
 
